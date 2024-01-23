@@ -1,0 +1,132 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+package hydrologybuffer;
+
+option go_package = "github.com/IAmFutureHokage/HL-BufferService";
+
+service HydrologyBufferService {
+    rpc AddTelegram(AddTelegramRequest) returns (AddTelegramResponse);
+    rpc RemoveTelegrams(RemoveTelegramsRequest) returns (RemoveTelegramsResponse);
+    rpc UpdateTelegramByInfo(UpdateTelegramByInfoRequest) returns (UpdateTelegramResponse);
+    rpc UpdateTelegramByCode(UpdateTelegramByCodeRequest) returns (UpdateTelegramResponse);
+    rpc GetTelegram(GetTelegramRequest) returns (GetTelegramResponse);
+    rpc GetTelegrams(GetTelegramsRequest) returns (GetTelegramsResponse);
+    rpc TransferToSystem(TransferToSystemRequest) returns (TransferToSystemResponse);
+}
+
+message Telegram {
+    string id = 1;
+    string group_id = 2;
+    string telegram_code = 3;
+    string post_code = 4;
+    google.protobuf.Timestamp datetime = 5;
+    bool is_dangerous = 6;
+    google.protobuf.Int32Value water_level_on_time = 7;
+    google.protobuf.Int32Value delta_water_level = 8;
+    google.protobuf.Int32Value water_level_on20h = 9;
+    google.protobuf.DoubleValue water_temperature = 10;
+    google.protobuf.Int32Value air_temperature = 11;
+    google.protobuf.Int32Value ice_phenomenia_state = 12;
+    repeated IcePhenomenia ice_phenomenias = 13;
+    google.protobuf.Int32Value ice_height = 14;
+    google.protobuf.Int32Value snow_height = 15;
+    google.protobuf.DoubleValue water_flow = 16;
+    google.protobuf.DoubleValue precipitation_value = 17;
+    google.protobuf.Int32Value precipitation_duration = 18;
+    google.protobuf.Timestamp reservoir_date = 19;
+    google.protobuf.Int32Value headwater_level = 20;
+    google.protobuf.Int32Value average_reservoir_level = 21;
+    google.protobuf.Int32Value downstream_level = 22;
+    google.protobuf.DoubleValue reservoir_volume = 23;
+    google.protobuf.Timestamp reservoir_water_inflow_date = 24;
+    google.protobuf.DoubleValue inflow = 25;
+    google.protobuf.DoubleValue reset = 26;
+}
+
+message IcePhenomenia {
+    int32 phenomen = 1; // енам надо
+    google.protobuf.Int32Value intensity = 2;
+}
+
+enum IcePhenomeniaState {
+    TRUE = 0;
+    END = 1;
+    NULL_STATE = 3;
+}
+
+enum SnowHeight {
+    NULL = 0;
+    LESS_5 = 1;
+    FROM_5_TO_10 = 2;
+	FROM_11_TO_15 = 3;
+	FROM_16_TO_20 = 4;
+	FROM_21_TO_25 = 5;
+	FROM_26_TO_35 = 6;
+	FROM_36_TO_50 = 7;
+	FROM_51_TO_70 = 8;
+	MORE_70 = 9;
+}
+
+enum PrecipitationDuration {
+    EMPTY = 0;
+    LESS_1 = 1;
+    FROM_1_TO_3 = 2;
+	FROM_3_TO_6 = 3;
+	FROM_6_TO_12 = 4;
+	MORE_12 = 5;
+}
+
+
+message AddTelegramRequest {
+    string code = 1;
+}
+
+message AddTelegramResponse {
+    repeated Telegram telegrams = 1;
+}
+
+message RemoveTelegramsRequest {
+    repeated string id = 1;
+}
+
+message RemoveTelegramsResponse {
+    bool success = 1;
+}
+
+message UpdateTelegramByInfoRequest {
+    Telegram telegram = 1;
+}
+
+message UpdateTelegramByCodeRequest {
+    string id = 1;
+    string telegram_code = 2;
+}
+
+message UpdateTelegramResponse {
+    Telegram telegram = 1;
+}
+
+message GetTelegramRequest {
+    string id = 1;
+}
+
+message GetTelegramResponse {
+    Telegram Telegram = 1;
+}
+
+message GetTelegramsRequest {
+}
+
+message GetTelegramsResponse {
+    repeated Telegram telegrams = 1;
+}
+
+message TransferToSystemRequest {
+}
+
+message TransferToSystemResponse {
+    bool success = 1;
+}

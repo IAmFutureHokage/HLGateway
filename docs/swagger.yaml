@@ -1,0 +1,107 @@
+basePath: /api/v1
+definitions:
+  dto.AddTelegramRequest:
+    properties:
+      code:
+        type: string
+    type: object
+  dto.AddTelegramResponse:
+    properties:
+      telegrams:
+        items:
+          $ref: '#/definitions/dto.Telegram'
+        type: array
+    type: object
+  dto.IcePhenomenia:
+    properties:
+      intensity:
+        type: integer
+      phenomen:
+        type: integer
+    type: object
+  dto.Telegram:
+    properties:
+      air_temperature:
+        type: integer
+      average_reservoir_level:
+        type: integer
+      datetime:
+        type: string
+      delta_water_level:
+        type: integer
+      downstream_level:
+        type: integer
+      group_id:
+        type: string
+      headwater_level:
+        type: integer
+      ice_height:
+        type: integer
+      ice_phenomenia_state:
+        type: integer
+      ice_phenomenias:
+        items:
+          $ref: '#/definitions/dto.IcePhenomenia'
+        type: array
+      id:
+        type: string
+      inflow:
+        type: number
+      is_dangerous:
+        type: boolean
+      post_code:
+        type: string
+      precipitation_duration:
+        type: integer
+      precipitation_value:
+        type: number
+      reservoir_date:
+        type: string
+      reservoir_volume:
+        type: number
+      reservoir_water_inflow_date:
+        type: string
+      reset:
+        type: number
+      snow_height:
+        type: integer
+      telegram_code:
+        type: string
+      water_flow:
+        type: number
+      water_level_on_time:
+        type: integer
+      water_level_on20h:
+        type: integer
+      water_temperature:
+        type: number
+    type: object
+info:
+  contact: {}
+  description: This is the HLGateway server API.
+  title: HLGateway API
+  version: "1"
+paths:
+  /api/add-telegram:
+    post:
+      consumes:
+      - application/json
+      description: Add a new telegram
+      parameters:
+      - description: Add Telegram Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddTelegramRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.AddTelegramResponse'
+      summary: Add telegram
+      tags:
+      - Telegram
+swagger: "2.0"
