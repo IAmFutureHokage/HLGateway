@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/spf13/viper"
 	fiberSwagger "github.com/swaggo/fiber-swagger"
 	"google.golang.org/grpc"
@@ -34,6 +35,12 @@ func init() {
 
 func main() {
 	app := fiber.New()
+
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowMethods: "GET,POST,HEAD,PUT,DELETE,PATCH",
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
 
 	conn, err := grpc.Dial(viper.GetString("services.buffer-service"), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
