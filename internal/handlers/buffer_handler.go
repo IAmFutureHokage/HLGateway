@@ -67,15 +67,15 @@ func (h *Handler) RemoveTelegramHandler(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Ошибка декодирования запроса"})
 	}
 
-	grpcRequest := pb.RemoveTelegramRequest{Code: request.Code}
+	grpcRequest := pb.RemoveTelegramsRequest{Id: request.ID}
 	grpcResponse, err := h.grpcClient.RemoveTelegrams(c.Context(), &grpcRequest)
 	if err != nil {
 		return handleGRPCError(c, err)
 	}
 
-	telegrams := buildTelegramsFromGRPCResponse(grpcResponse)
+	telegrams := buildTelegramsFromGRPCResponse()
 
-	return c.Status(fiber.StatusOK).JSON(dto.RemoveTelegramResponse{Telegrams: telegrams})
+	return c.Status(fiber.StatusOK).JSON(dto.RemoveTelegramsResponse{Success: telegrams})
 }
 
 // @Summary Update Telegram By Info
@@ -93,7 +93,7 @@ func (h *Handler) UpdateTelegramByInfoHandler(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Ошибка декодирования запроса"})
 	}
 
-	grpcRequest := pb.UpdateTelegramByInfoRequest{Code: request.Code}
+	grpcRequest := pb.UpdateTelegramByInfoRequest{Telegram: request.Telegram}
 	grpcResponse, err := h.grpcClient.UpdateTelegramByInfo(c.Context(), &grpcRequest)
 	if err != nil {
 		return handleGRPCError(c, err)
