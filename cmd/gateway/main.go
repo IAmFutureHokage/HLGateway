@@ -26,7 +26,7 @@ func init() {
 	}
 
 	viper.SetConfigName(env)
-	viper.AddConfigPath("../../config")
+	viper.AddConfigPath("./config")
 	viper.SetConfigType("yaml")
 
 	if err := viper.ReadInConfig(); err != nil {
@@ -40,7 +40,7 @@ func main() {
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
 		AllowMethods: "GET,POST,HEAD,PUT,DELETE,PATCH",
-		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowHeaders: "Origin, Content-Type, Accept, ngrok-skip-browser-warning",
 	}))
 
 	//bufferService
