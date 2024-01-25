@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+package hydrologycontrol;
+
+option go_package = "github.com/IAmFutureHokage/HL-ControlService-Go";
+
+service HydrologyStatsService {
+    rpc AddControlValue(AddControlValueRequest) returns (AddControlValueResponse);
+    rpc RemoveControlValue(RemoveControlValueRequest) returns (RemoveControlValueResponse);
+    rpc UpdateControlValue(UpdateControlValueRequest) returns (UpdateControlValueResponse);
+    rpc GetControlValues(GetControlValuesRequest) returns (GetControlValuesResponse);
+    rpc CheckWaterLevel(CheckWaterLevelRequest) returns (CheckWaterLevelResponse);
+    rpc GetStats(GetStatsRequest) returns (GetStatsResponse);
+}
+
+message ControlValue {
+    string id = 1;
+    string post_code = 2;
+    ControlValueType type = 3;
+    google.protobuf.Timestamp date_start = 4;
+    uint32 value = 7;
+}
+
+message StatsDay {
+    google.protobuf.Timestamp date = 1;
+    uint32 norm = 2;
+    uint32 floodplain = 3;
+    uint32 adverse = 4;
+    uint32 dangerous = 5;
+    google.protobuf.Int32Value waterlevel = 6;
+}
+
+enum ControlValueType {
+    NONE = 0;
+    NORM = 1;
+    FLOODPLAIN = 2;
+    ADVERSE = 3;
+    DANGEROUS = 4;
+}
+
+message AddControlValueRequest {
+    string post_code = 1;
+    ControlValueType type = 2;
+    google.protobuf.Timestamp date_start = 3;
+    uint32 value = 4;
+}
+
+message AddControlValueResponse {
+    ControlValue control_value = 1;
+}
+
+message RemoveControlValueRequest {
+    string id = 1;
+}
+
+message RemoveControlValueResponse {
+    bool success = 1;
+}
+
+message UpdateControlValueRequest {
+    repeated ControlValue control_values = 1; 
+}
+
+message UpdateControlValueResponse {
+    repeated ControlValue control_values = 1; 
+}
+
+message GetControlValuesRequest {
+    string post_code = 1;
+    ControlValueType type = 2;
+    uint32 page = 3; 
+}
+message GetControlValuesResponse {
+    uint32 page = 1;
+    uint32 max_page = 2;
+    repeated ControlValue control_values = 3;
+}
+
+message CheckWaterLevelRequest {
+    google.protobuf.Timestamp date = 1;
+    string post_code = 2;
+    uint32 value = 3;
+}
+
+message CheckWaterLevelResponse {
+    uint32 excess = 1;
+}
+
+message GetStatsRequest {
+    string post_code = 1;
+    google.protobuf.Timestamp start_date = 2;
+    google.protobuf.Timestamp end_date = 3;
+    uint32 graph_points = 4;
+}
+
+message GetStatsResponse {
+    google.protobuf.Timestamp start_interval = 1;
+    repeated StatsDay stats = 2;
+}

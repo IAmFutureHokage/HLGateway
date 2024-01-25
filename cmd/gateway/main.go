@@ -16,6 +16,7 @@ import (
 	_ "github.com/IAmFutureHokage/HLGateway/docs"
 	"github.com/IAmFutureHokage/HLGateway/internal/handlers"
 	buffer_pb "github.com/IAmFutureHokage/HLGateway/proto/buffer_service"
+	control_pb "github.com/IAmFutureHokage/HLGateway/proto/control_service"
 	posts_pb "github.com/IAmFutureHokage/HLGateway/proto/posts_service"
 )
 
@@ -61,9 +62,19 @@ func main() {
 	grpcPostsClient := posts_pb.NewPostsServiceClient(connPosts)
 	postsHandler := handlers.NewPostsHandler(grpcPostsClient)
 
+	//controlService
+	connControl, err := grpc.Dial(viper.GetString("services.control-service"), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("Не удалось подключиться к gRPC сервису: %v", err)
+	}
+
+	grpcControlClient := control_pb.NewHydrologyStatsServiceClient(connControl)
+	controlHandler := handlers.NewControlHandler(grpcControlClient)
+
 	// мониторинг сервисов
 	go monitorServiceAvailability(viper.GetString("services.buffer-service"))
 	go monitorServiceAvailability(viper.GetString("services.posts-service"))
+	go monitorServiceAvailability(viper.GetString("services.control-service"))
 
 	// Глобальные middleware
 	//app.Use(middleware.Logger())
@@ -71,6 +82,7 @@ func main() {
 
 	setupBufferRoutes(app, bufferHandler)
 	setupPostsRoutes(app, postsHandler)
+	setupControlRoutes(app, controlHandler)
 
 	port := viper.GetInt("server.port")
 	if port == 0 {
@@ -85,6 +97,12 @@ func main() {
 func setupBufferRoutes(app *fiber.App, handler *handlers.BufferHandler) {
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 	app.Post("/api/v1/api/add-telegram", handler.AddTelegramHandler)
+	app.Delete("/api/v1/api/remove-telegrams", handler.RemoveTelegramsHandler)
+	app.Put("/api/v1/api/update-telegram-by-info", handler.UpdateTelegramByInfoHandler)
+	app.Put("/api/v1/api/update-telegram-by-code", handler.UpdateTelegramByCodeHandler)
+	app.Get("/api/v1/api/get-telegram", handler.GetTelegramHandler)
+	app.Get("/api/v1/api/get-telegrams", handler.GetTelegramsHandler)
+	app.Get("/api/v1/api/transfer-to-system", handler.TransferToSystemHandler)
 }
 
 func setupPostsRoutes(app *fiber.App, handler *handlers.PostsHandler) {
@@ -95,6 +113,15 @@ func setupPostsRoutes(app *fiber.App, handler *handlers.PostsHandler) {
 	app.Get("/api/v1/api/get-post", handler.GetPostHandler)
 	app.Get("/api/v1/api/find-posts", handler.FindPostsHandler)
 	app.Get("/api/v1/api/get-all-posts", handler.GetAllPostsHandler)
+}
+
+func setupControlRoutes(app *fiber.App, handler *handlers.ControlHandler) {
+	app.Post("/api/v1/api/add-control-value", handler.AddControlValueHandler)
+	app.Delete("/api/v1/api/remove-control-value", handler.RemoveControlValueHandler)
+	app.Put("/api/v1/api/update-control-value", handler.UpdateControlValueHandler)
+	app.Get("/api/v1/api/get-control-values", handler.GetControlValuesHandler)
+	app.Get("/api/v1/api/check-water-level", handler.CheckWaterLevelHandler)
+	app.Get("/api/v1/api/get-stats", handler.GetStatsHandler)
 }
 
 func monitorServiceAvailability(serviceAddress string) {

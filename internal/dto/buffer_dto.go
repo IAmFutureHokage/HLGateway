@@ -48,24 +48,45 @@ type RemoveTelegramsRequest struct {
 	ID []string `json:"id"`
 }
 
-type RemoveTelegramsResponce struct {
+type RemoveTelegramsResponse struct {
 	Success bool `json:"success"`
 }
 
 type UpdateTelegramByInfoRequest struct {
-	Telegram Telegram `json:"telegrams"`
+	Telegram Telegram `json:"telegram"`
 }
 
 type UpdateTelegramByInfoResponse struct {
-	Telegram Telegram `json:"telegrams"`
+	Telegram Telegram `json:"telegram"`
 }
 
-type ControlValue struct {
-	ID        string           `json:"id"`
-	PostCode  string           `json:"post_code"`
-	Type      ControlValueType `json:"type"`
-	DateStart time.Time        `json:"date_start"`
-	Value     uint32           `json:"value"`
+type UpdateTelegramByCodeRequest struct {
+	ID           string `json:"id"`
+	TelegramCode string `json:"telegram_code"`
 }
 
-type ControlValueType byte
+type UpdateTelegramByCodeResponse struct {
+	Telegram Telegram `json:"telegram"`
+}
+
+type GetTelegramRequest struct {
+	ID string `json:"id"`
+}
+
+type GetTelegramResponse struct {
+	Telegram Telegram `json:"telegram"`
+}
+
+type GetTelegramsRequest struct {
+}
+
+type GetTelegramsResponse struct {
+	Telegrams []Telegram `json:"telegrams"`
+}
+
+type TransferToSystemRequest struct {
+}
+
+type TransferToSystemResponse struct {
+	Success bool `json:"success"`
+}
