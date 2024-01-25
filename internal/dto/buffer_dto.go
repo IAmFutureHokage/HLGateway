@@ -43,3 +43,29 @@ type AddTelegramRequest struct {
 type AddTelegramResponse struct {
 	Telegrams []Telegram `json:"telegrams"`
 }
+
+type RemoveTelegramsRequest struct {
+	ID []string `json:"id"`
+}
+
+type RemoveTelegramsResponce struct {
+	Success bool `json:"success"`
+}
+
+type UpdateTelegramByInfoRequest struct {
+	Telegram Telegram `json:"telegrams"`
+}
+
+type UpdateTelegramByInfoResponse struct {
+	Telegram Telegram `json:"telegrams"`
+}
+
+type ControlValue struct {
+	ID        string           `json:"id"`
+	PostCode  string           `json:"post_code"`
+	Type      ControlValueType `json:"type"`
+	DateStart time.Time        `json:"date_start"`
+	Value     uint32           `json:"value"`
+}
+
+type ControlValueType byte
