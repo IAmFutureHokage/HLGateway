@@ -97,12 +97,12 @@ func main() {
 func setupBufferRoutes(app *fiber.App, handler *handlers.BufferHandler) {
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 	app.Post("/api/v1/api/add-telegram", handler.AddTelegramHandler)
-	app.Delete("/api/v1/api/remove-telegrams", handler.RemoveTelegramsHandler)
-	app.Put("/api/v1/api/update-telegram-by-info", handler.UpdateTelegramByInfoHandler)
-	app.Put("/api/v1/api/update-telegram-by-code", handler.UpdateTelegramByCodeHandler)
-	app.Get("/api/v1/api/get-telegram", handler.GetTelegramHandler)
-	app.Get("/api/v1/api/get-telegrams", handler.GetTelegramsHandler)
-	app.Get("/api/v1/api/transfer-to-system", handler.TransferToSystemHandler)
+	// app.Delete("/api/v1/api/remove-telegrams", handler.RemoveTelegramsHandler)
+	// app.Put("/api/v1/api/update-telegram-by-info", handler.UpdateTelegramByInfoHandler)
+	// app.Put("/api/v1/api/update-telegram-by-code", handler.UpdateTelegramByCodeHandler)
+	// app.Get("/api/v1/api/get-telegram", handler.GetTelegramHandler)
+	// app.Get("/api/v1/api/get-telegrams", handler.GetTelegramsHandler)
+	// app.Get("/api/v1/api/transfer-to-system", handler.TransferToSystemHandler)
 }
 
 func setupPostsRoutes(app *fiber.App, handler *handlers.PostsHandler) {

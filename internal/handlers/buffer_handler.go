@@ -54,57 +54,57 @@ func (h *BufferHandler) AddTelegramHandler(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(dto.AddTelegramResponse{Telegrams: telegrams})
 }
 
-// @Summary Remove telegram
-// @Description Remove existing telegram
-// @Tags Telegram
-// @Accept json
-// @Produce json
-// @Param request body dto.RemoveTelegramRequest true "Remove Telegram Request"
-// @Success 200 {object} dto.RemoveTelegramResponse
-// @Router /api/remove-telegram [post]
-func (h *Handler) RemoveTelegramHandler(c *fiber.Ctx) error {
+// // @Summary Remove telegram
+// // @Description Remove existing telegram
+// // @Tags Telegram
+// // @Accept json
+// // @Produce json
+// // @Param request body dto.RemoveTelegramRequest true "Remove Telegram Request"
+// // @Success 200 {object} dto.RemoveTelegramResponse
+// // @Router /api/remove-telegram [post]
+// func (h *BufferHandler) RemoveTelegramHandler(c *fiber.Ctx) error {
 
-	// 	var request dto.RemoveTelegramsRequest
-	// 	if err := c.BodyParser(&request); err != nil {
-	// 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Ошибка декодирования запроса"})
-	// 	}
+// 		var request dto.RemoveTelegramsRequest
+// 		if err := c.BodyParser(&request); err != nil {
+// 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Ошибка декодирования запроса"})
+// 		}
 
-	// 	grpcRequest := pb.RemoveTelegramsRequest{Id: request.ID}
-	// 	grpcResponse, err := h.grpcClient.RemoveTelegrams(c.Context(), &grpcRequest)
-	// 	if err != nil {
-	// 		return handleGRPCError(c, err)
-	// 	}
+// 		grpcRequest := pb.RemoveTelegramsRequest{Id: request.ID}
+// 		grpcResponse, err := h.grpcClient.RemoveTelegrams(c.Context(), &grpcRequest)
+// 		if err != nil {
+// 			return handleGRPCError(c, err)
+// 		}
 
-	telegrams := buildTelegramsFromGRPCResponse()
+// 	telegrams := buildTelegramsFromGRPCResponse()
 
-	return c.Status(fiber.StatusOK).JSON(dto.RemoveTelegramsResponse{Success: telegrams})
-}
+// 	return c.Status(fiber.StatusOK).JSON(dto.RemoveTelegramsResponse{Success: telegrams})
+// }
 
-// @Summary Update Telegram By Info
-// @Description Update info about telegram By Info
-// @Tags Telegram
-// @Accept json
-// @Produce json
-// @Param request body dto.UpdateTelegramByInfoRequest true "Update Telegram By Info Request"
-// @Success 200 {object} dto.UpdateTelegramByInfoResponse
-// @Router /api/update-telegram-by-info [post]
-func (h *Handler) UpdateTelegramByInfoHandler(c *fiber.Ctx) error {
+// // @Summary Update Telegram By Info
+// // @Description Update info about telegram By Info
+// // @Tags Telegram
+// // @Accept json
+// // @Produce json
+// // @Param request body dto.UpdateTelegramByInfoRequest true "Update Telegram By Info Request"
+// // @Success 200 {object} dto.UpdateTelegramByInfoResponse
+// // @Router /api/update-telegram-by-info [post]
+// func (h *Handler) UpdateTelegramByInfoHandler(c *fiber.Ctx) error {
 
-	// 	var request dto.UpdateTelegramByInfoRequest
-	// 	if err := c.BodyParser(&request); err != nil {
-	// 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Ошибка декодирования запроса"})
-	// 	}
+// 	// 	var request dto.UpdateTelegramByInfoRequest
+// 	// 	if err := c.BodyParser(&request); err != nil {
+// 	// 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Ошибка декодирования запроса"})
+// 	// 	}
 
-	grpcRequest := pb.UpdateTelegramByInfoRequest{Telegram: request.Telegram}
-	grpcResponse, err := h.grpcClient.UpdateTelegramByInfo(c.Context(), &grpcRequest)
-	if err != nil {
-		return handleGRPCError(c, err)
-	}
+// 	grpcRequest := pb.UpdateTelegramByInfoRequest{Telegram: request.Telegram}
+// 	grpcResponse, err := h.grpcClient.UpdateTelegramByInfo(c.Context(), &grpcRequest)
+// 	if err != nil {
+// 		return handleGRPCError(c, err)
+// 	}
 
-	telegrams := buildTelegramsFromGRPCResponse(grpcResponse)
+// 	telegrams := buildTelegramsFromGRPCResponse(grpcResponse)
 
-	return c.Status(fiber.StatusOK).JSON(dto.UpdateTelegramByInfoResponse{Telegrams: telegrams})
-}
+// 	return c.Status(fiber.StatusOK).JSON(dto.UpdateTelegramByInfoResponse{Telegrams: telegrams})
+// }
 
 func handleGRPCError(c *fiber.Ctx, err error) error {
 	grpcErr, _ := status.FromError(err)

@@ -56,33 +56,14 @@ type UpdateControlValueResponse struct {
 	ControlValues []ControlValue `json:"control_values"`
 }
 
-type GetControlValuesRequest struct {
-	PostCode string           `json:"post_code"`
-	Type     ControlValueType `json:"type"`
-	Page     uint32           `json:"page"`
-}
-
 type GetControlValuesResponse struct {
 	Page          uint32         `json:"page"`
 	MaxPage       uint32         `json:"max_page"`
 	ControlValues []ControlValue `json:"control_values"`
 }
 
-type CheckWaterLevelRequest struct {
-	Date     time.Time `json:"date"`
-	PostCode string    `json:"post_code"`
-	Value    uint32    `json:"value"`
-}
-
 type CheckWaterLevelResponse struct {
 	Excess uint32 `json:"excess"`
-}
-
-type GetStatsRequest struct {
-	PostCode    string    `json:"post_code"`
-	StartDate   time.Time `json:"start_date"`
-	EndDate     time.Time `json:"end_date"`
-	GraphPoints uint32    `json:"graph_points"`
 }
 
 type GetStatsResponse struct {

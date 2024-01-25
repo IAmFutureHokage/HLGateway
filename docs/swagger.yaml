@@ -1,5 +1,21 @@
 basePath: /api/v1
 definitions:
+  dto.AddControlValueRequest:
+    properties:
+      date_start:
+        type: string
+      post_code:
+        type: string
+      type:
+        $ref: '#/definitions/dto.ControlValueType'
+      value:
+        type: integer
+    type: object
+  dto.AddControlValueResponse:
+    properties:
+      control_value:
+        $ref: '#/definitions/dto.ControlValue'
+    type: object
   dto.AddTelegramRequest:
     properties:
       code:
@@ -12,10 +28,53 @@ definitions:
           $ref: '#/definitions/dto.Telegram'
         type: array
     type: object
+  dto.CheckWaterLevelResponse:
+    properties:
+      excess:
+        type: integer
+    type: object
+  dto.ControlValue:
+    properties:
+      date_start:
+        type: string
+      id:
+        type: string
+      post_code:
+        type: string
+      type:
+        $ref: '#/definitions/dto.ControlValueType'
+      value:
+        type: integer
+    type: object
+  dto.ControlValueType:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    type: integer
+    x-enum-varnames:
+    - None
+    - Norm
+    - Floodplain
+    - Adverse
+    - Dangerous
   dto.DeletePostRequest:
     properties:
       id:
         type: string
+    type: object
+  dto.GetControlValuesResponse:
+    properties:
+      control_values:
+        items:
+          $ref: '#/definitions/dto.ControlValue'
+        type: array
+      max_page:
+        type: integer
+      page:
+        type: integer
     type: object
   dto.GetPostsPageResponse:
     properties:
@@ -26,6 +85,15 @@ definitions:
       posts:
         items:
           $ref: '#/definitions/dto.Post'
+        type: array
+    type: object
+  dto.GetStatsResponse:
+    properties:
+      start_interval:
+        type: string
+      stats:
+        items:
+          $ref: '#/definitions/dto.StatsDay'
         type: array
     type: object
   dto.IcePhenomenia:
@@ -62,6 +130,31 @@ definitions:
         items:
           $ref: '#/definitions/dto.Post'
         type: array
+    type: object
+  dto.RemoveControlValueRequest:
+    properties:
+      id:
+        type: string
+    type: object
+  dto.RemoveControlValueResponse:
+    properties:
+      success:
+        type: boolean
+    type: object
+  dto.StatsDay:
+    properties:
+      adverse:
+        type: integer
+      dangerous:
+        type: integer
+      date:
+        type: string
+      floodplain:
+        type: integer
+      norm:
+        type: integer
+      waterLevel:
+        type: integer
     type: object
   dto.Telegram:
     properties:
@@ -120,12 +213,48 @@ definitions:
       water_temperature:
         type: number
     type: object
+  dto.UpdateControlValueRequest:
+    properties:
+      control_values:
+        items:
+          $ref: '#/definitions/dto.ControlValue'
+        type: array
+    type: object
+  dto.UpdateControlValueResponse:
+    properties:
+      control_values:
+        items:
+          $ref: '#/definitions/dto.ControlValue'
+        type: array
+    type: object
 info:
   contact: {}
   description: This is the HLGateway server API.
   title: HLGateway API
   version: "1"
 paths:
+  /api/add-control-value:
+    post:
+      consumes:
+      - application/json
+      description: Add a new control value
+      parameters:
+      - description: Add Control Value Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.AddControlValueRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.AddControlValueResponse'
+      summary: Add control value
+      tags:
+      - Statistic
   /api/add-post:
     post:
       consumes:
@@ -170,6 +299,37 @@ paths:
       summary: Add telegram
       tags:
       - Buffer
+  /api/check-water-level:
+    get:
+      consumes:
+      - application/json
+      description: Check Water Level
+      parameters:
+      - description: PostCode
+        in: query
+        name: postcode
+        required: true
+        type: string
+      - description: date
+        in: query
+        name: date
+        required: true
+        type: string
+      - description: WaterLevel
+        in: query
+        name: value
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.CheckWaterLevelResponse'
+      summary: Check Water Level
+      tags:
+      - Statistic
   /api/delete-post:
     delete:
       consumes:
@@ -228,6 +388,37 @@ paths:
       summary: Get all posts
       tags:
       - PostsService
+  /api/get-control-values:
+    get:
+      consumes:
+      - application/json
+      description: Get slice of control value with pages
+      parameters:
+      - description: PostCode
+        in: query
+        name: postcode
+        required: true
+        type: string
+      - description: Type of control value
+        in: query
+        name: type
+        required: true
+        type: integer
+      - description: Page
+        in: query
+        name: page
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetControlValuesResponse'
+      summary: Get control value
+      tags:
+      - Statistic
   /api/get-post:
     get:
       consumes:
@@ -270,6 +461,86 @@ paths:
       summary: Gets posts
       tags:
       - PostsService
+  /api/get-stats:
+    get:
+      consumes:
+      - application/json
+      description: Get stats by day in time interval (for graph)
+      parameters:
+      - description: PostCode
+        in: query
+        name: postcode
+        required: true
+        type: string
+      - description: Start Date
+        in: query
+        name: startdate
+        required: true
+        type: string
+      - description: End Date
+        in: query
+        name: enddate
+        required: true
+        type: string
+      - description: Graph Points
+        in: query
+        name: graphpoints
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetStatsResponse'
+      summary: Get stats
+      tags:
+      - Statistic
+  /api/remove-control-value:
+    delete:
+      consumes:
+      - application/json
+      description: Remove a control value by id
+      parameters:
+      - description: Remove Control Value Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RemoveControlValueRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.RemoveControlValueResponse'
+      summary: Remove control value
+      tags:
+      - Statistic
+  /api/update-control-value:
+    put:
+      consumes:
+      - application/json
+      description: Update control value
+      parameters:
+      - description: Update Control Value Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateControlValueRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateControlValueResponse'
+      summary: Update control value
+      tags:
+      - Statistic
   /api/update-post:
     put:
       consumes:

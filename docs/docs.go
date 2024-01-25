@@ -15,6 +15,40 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/add-control-value": {
+            "post": {
+                "description": "Add a new control value",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistic"
+                ],
+                "summary": "Add control value",
+                "parameters": [
+                    {
+                        "description": "Add Control Value Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.AddControlValueRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.AddControlValueResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/add-post": {
             "post": {
                 "description": "Add a new post",
@@ -78,6 +112,52 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.AddTelegramResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/check-water-level": {
+            "get": {
+                "description": "Check Water Level",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistic"
+                ],
+                "summary": "Check Water Level",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "PostCode",
+                        "name": "postcode",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "date",
+                        "name": "date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "WaterLevel",
+                        "name": "value",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.CheckWaterLevelResponse"
                         }
                     }
                 }
@@ -172,6 +252,52 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/get-control-values": {
+            "get": {
+                "description": "Get slice of control value with pages",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistic"
+                ],
+                "summary": "Get control value",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "PostCode",
+                        "name": "postcode",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Type of control value",
+                        "name": "type",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetControlValuesResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/get-post": {
             "get": {
                 "description": "Get the post by id",
@@ -236,6 +362,127 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/get-stats": {
+            "get": {
+                "description": "Get stats by day in time interval (for graph)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistic"
+                ],
+                "summary": "Get stats",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "PostCode",
+                        "name": "postcode",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Start Date",
+                        "name": "startdate",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "End Date",
+                        "name": "enddate",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Graph Points",
+                        "name": "graphpoints",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetStatsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/remove-control-value": {
+            "delete": {
+                "description": "Remove a control value by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistic"
+                ],
+                "summary": "Remove control value",
+                "parameters": [
+                    {
+                        "description": "Remove Control Value Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RemoveControlValueRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.RemoveControlValueResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/update-control-value": {
+            "put": {
+                "description": "Update control value",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Statistic"
+                ],
+                "summary": "Update control value",
+                "parameters": [
+                    {
+                        "description": "Update Control Value Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateControlValueRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateControlValueResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/update-post": {
             "put": {
                 "description": "Update the post",
@@ -272,6 +519,31 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.AddControlValueRequest": {
+            "type": "object",
+            "properties": {
+                "date_start": {
+                    "type": "string"
+                },
+                "post_code": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/dto.ControlValueType"
+                },
+                "value": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.AddControlValueResponse": {
+            "type": "object",
+            "properties": {
+                "control_value": {
+                    "$ref": "#/definitions/dto.ControlValue"
+                }
+            }
+        },
         "dto.AddTelegramRequest": {
             "type": "object",
             "properties": {
@@ -291,11 +563,73 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.CheckWaterLevelResponse": {
+            "type": "object",
+            "properties": {
+                "excess": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.ControlValue": {
+            "type": "object",
+            "properties": {
+                "date_start": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "post_code": {
+                    "type": "string"
+                },
+                "type": {
+                    "$ref": "#/definitions/dto.ControlValueType"
+                },
+                "value": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.ControlValueType": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "x-enum-varnames": [
+                "None",
+                "Norm",
+                "Floodplain",
+                "Adverse",
+                "Dangerous"
+            ]
+        },
         "dto.DeletePostRequest": {
             "type": "object",
             "properties": {
                 "id": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.GetControlValuesResponse": {
+            "type": "object",
+            "properties": {
+                "control_values": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ControlValue"
+                    }
+                },
+                "max_page": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
                 }
             }
         },
@@ -312,6 +646,20 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/dto.Post"
+                    }
+                }
+            }
+        },
+        "dto.GetStatsResponse": {
+            "type": "object",
+            "properties": {
+                "start_interval": {
+                    "type": "string"
+                },
+                "stats": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.StatsDay"
                     }
                 }
             }
@@ -368,6 +716,45 @@ const docTemplate = `{
                     "items": {
                         "$ref": "#/definitions/dto.Post"
                     }
+                }
+            }
+        },
+        "dto.RemoveControlValueRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RemoveControlValueResponse": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto.StatsDay": {
+            "type": "object",
+            "properties": {
+                "adverse": {
+                    "type": "integer"
+                },
+                "dangerous": {
+                    "type": "integer"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "floodplain": {
+                    "type": "integer"
+                },
+                "norm": {
+                    "type": "integer"
+                },
+                "waterLevel": {
+                    "type": "integer"
                 }
             }
         },
@@ -454,6 +841,28 @@ const docTemplate = `{
                 },
                 "water_temperature": {
                     "type": "number"
+                }
+            }
+        },
+        "dto.UpdateControlValueRequest": {
+            "type": "object",
+            "properties": {
+                "control_values": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ControlValue"
+                    }
+                }
+            }
+        },
+        "dto.UpdateControlValueResponse": {
+            "type": "object",
+            "properties": {
+                "control_values": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.ControlValue"
+                    }
                 }
             }
         }

@@ -7,6 +7,8 @@
 package handlers
 
 import (
+	"time"
+
 	"github.com/IAmFutureHokage/HLGateway/internal/dto"
 	pb "github.com/IAmFutureHokage/HLGateway/proto/control_service"
 	"github.com/gofiber/fiber/v2"
@@ -25,7 +27,7 @@ func NewControlHandler(client pb.HydrologyStatsServiceClient) *ControlHandler {
 
 // @Summary Add control value
 // @Description Add a new control value
-// @Tags Buffer
+// @Tags Statistic
 // @Accept json
 // @Produce json
 // @Param request body dto.AddControlValueRequest true "Add Control Value Request"
@@ -62,7 +64,7 @@ func (h *ControlHandler) AddControlValueHandler(c *fiber.Ctx) error {
 
 // @Summary Remove control value
 // @Description Remove a control value by id
-// @Tags Buffer
+// @Tags Statistic
 // @Accept json
 // @Produce json
 // @Param request body dto.RemoveControlValueRequest true "Remove Control Value Request"
@@ -89,7 +91,7 @@ func (h *ControlHandler) RemoveControlValueHandler(c *fiber.Ctx) error {
 
 // @Summary Update control value
 // @Description Update control value
-// @Tags Buffer
+// @Tags Statistic
 // @Accept json
 // @Produce json
 // @Param request body dto.UpdateControlValueRequest true "Update Control Value Request"
@@ -138,23 +140,24 @@ func (h *ControlHandler) UpdateControlValueHandler(c *fiber.Ctx) error {
 
 // @Summary Get control value
 // @Description Get slice of control value with pages
-// @Tags Buffer
+// @Tags Statistic
 // @Accept json
 // @Produce json
-// @Param request body dto.GetControlValueRequest true "Get Control Value Request"
-// @Success 200 {object} dto.GetControlValueResponse
+// @Param postcode query string true "PostCode"
+// @Param type query uint true "Type of control value"
+// @Param page query uint true "Page"
+// @Success 200 {object} dto.GetControlValuesResponse
 // @Router /api/get-control-values [get]
 func (h *ControlHandler) GetControlValuesHandler(c *fiber.Ctx) error {
 
-	var request dto.GetControlValuesRequest
-	if err := c.BodyParser(&request); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Ошибка декодирования запроса"})
-	}
+	postcode := c.Query("postcode")
+	typeCV := c.QueryInt("type")
+	page := c.QueryInt("type", 1)
 
 	grpcRequest := pb.GetControlValuesRequest{
-		PostCode: request.PostCode,
-		Type:     pb.ControlValueType(request.Type),
-		Page:     request.Page,
+		PostCode: postcode,
+		Type:     pb.ControlValueType(typeCV),
+		Page:     uint32(page),
 	}
 
 	grpcResponse, err := h.grpcClient.GetControlValues(c.Context(), &grpcRequest)
@@ -185,23 +188,27 @@ func (h *ControlHandler) GetControlValuesHandler(c *fiber.Ctx) error {
 
 // @Summary Check Water Level
 // @Description Check Water Level
-// @Tags Buffer
+// @Tags Statistic
 // @Accept json
 // @Produce json
-// @Param request body dto.CheckWaterLevelRequest true "Check Water Level Request"
+// @Param postcode query string true "PostCode"
+// @Param date query string true "date"
+// @Param value query uint true "WaterLevel"
 // @Success 200 {object} dto.CheckWaterLevelResponse
 // @Router /api/check-water-level [get]
 func (h *ControlHandler) CheckWaterLevelHandler(c *fiber.Ctx) error {
 
-	var request dto.CheckWaterLevelRequest
-	if err := c.BodyParser(&request); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Ошибка декодирования запроса"})
+	postcode := c.Query("postcode")
+	date, err := time.Parse(time.RFC3339, c.Query("date"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Некорректный формат даты"})
 	}
+	waterlevel := c.QueryInt("waterlevel")
 
 	grpcRequest := pb.CheckWaterLevelRequest{
-		Date:     timestamppb.New(request.Date),
-		PostCode: request.PostCode,
-		Value:    request.Value,
+		Date:     timestamppb.New(date),
+		PostCode: postcode,
+		Value:    uint32(waterlevel),
 	}
 
 	grpcResponse, err := h.grpcClient.CheckWaterLevel(c.Context(), &grpcRequest)
@@ -214,24 +221,33 @@ func (h *ControlHandler) CheckWaterLevelHandler(c *fiber.Ctx) error {
 
 // @Summary Get stats
 // @Description Get stats by day in time interval (for graph)
-// @Tags Buffer
+// @Tags Statistic
 // @Accept json
 // @Produce json
-// @Param request body dto.GetStatsRequest true "Get Stats Request"
+// @Param postcode query string true "PostCode"
+// @Param startdate query string true "Start Date"
+// @Param enddate query string true "End Date"
+// @Param graphpoints query uint true "Graph Points"
 // @Success 200 {object} dto.GetStatsResponse
 // @Router /api/get-stats [get]
 func (h *ControlHandler) GetStatsHandler(c *fiber.Ctx) error {
 
-	var request dto.GetStatsRequest
-	if err := c.BodyParser(&request); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Ошибка декодирования запроса"})
+	postcode := c.Query("postcode")
+	startdate, err := time.Parse(time.RFC3339, c.Query("startdate"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Некорректный формат даты"})
 	}
+	enddate, err := time.Parse(time.RFC3339, c.Query("enddate"))
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Некорректный формат даты"})
+	}
+	graphpoints := c.QueryInt("graphpoints")
 
 	grpcRequest := pb.GetStatsRequest{
-		PostCode:    request.PostCode,
-		StartDate:   timestamppb.New(request.StartDate),
-		EndDate:     timestamppb.New(request.EndDate),
-		GraphPoints: request.GraphPoints,
+		PostCode:    postcode,
+		StartDate:   timestamppb.New(startdate),
+		EndDate:     timestamppb.New(enddate),
+		GraphPoints: uint32(graphpoints),
 	}
 
 	grpcResponse, err := h.grpcClient.GetStats(c.Context(), &grpcRequest)
