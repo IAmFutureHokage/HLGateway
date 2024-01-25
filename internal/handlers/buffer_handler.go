@@ -14,6 +14,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/timestamppb"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 type BufferHandler struct {
@@ -52,15 +54,15 @@ func (h *BufferHandler) AddTelegramHandler(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(dto.AddTelegramResponse{Telegrams: telegrams})
 }
 
-// @Summary Remove telegram
-// @Description Remove existing telegram
+// @Summary Remove telegrams
+// @Description Remove existing telegrams
 // @Tags Telegram
 // @Accept json
 // @Produce json
-// @Param request body dto.RemoveTelegramRequest true "Remove Telegram Request"
-// @Success 200 {object} dto.RemoveTelegramResponse
-// @Router /api/remove-telegram [post]
-func (h *Handler) RemoveTelegramHandler(c *fiber.Ctx) error {
+// @Param request body dto.RemoveTelegramsRequest true "Remove Telegrams Request"
+// @Success 200 {object} dto.RemoveTelegramsResponse
+// @Router /api/remove-telegrams [delete]
+func (h *BufferHandler) RemoveTelegramsHandler(c *fiber.Ctx) error {
 
 	var request dto.RemoveTelegramsRequest
 	if err := c.BodyParser(&request); err != nil {
@@ -73,9 +75,7 @@ func (h *Handler) RemoveTelegramHandler(c *fiber.Ctx) error {
 		return handleGRPCError(c, err)
 	}
 
-	telegrams := buildTelegramsFromGRPCResponse()
-
-	return c.Status(fiber.StatusOK).JSON(dto.RemoveTelegramsResponse{Success: telegrams})
+	return c.Status(fiber.StatusOK).JSON(dto.RemoveTelegramsResponse{Success: grpcResponse.Success})
 }
 
 // @Summary Update Telegram By Info
@@ -85,23 +85,27 @@ func (h *Handler) RemoveTelegramHandler(c *fiber.Ctx) error {
 // @Produce json
 // @Param request body dto.UpdateTelegramByInfoRequest true "Update Telegram By Info Request"
 // @Success 200 {object} dto.UpdateTelegramByInfoResponse
-// @Router /api/update-telegram-by-info [post]
-func (h *Handler) UpdateTelegramByInfoHandler(c *fiber.Ctx) error {
-
+// @Router /api/update-telegram-by-info [put]
+// func (h *BufferHandler) UpdateTelegramByInfoHandler(c *fiber.Ctx) error {
+func (h *BufferHandler) UpdateTelegramByInfoHandler(c *fiber.Ctx) error {
 	var request dto.UpdateTelegramByInfoRequest
 	if err := c.BodyParser(&request); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Ошибка декодирования запроса"})
 	}
 
-	grpcRequest := pb.UpdateTelegramByInfoRequest{Telegram: request.Telegram}
-	grpcResponse, err := h.grpcClient.UpdateTelegramByInfo(c.Context(), &grpcRequest)
+	grpcRequest := &pb.UpdateTelegramByInfoRequest{
+		Telegram: buildGRPCMessageFromDTO(request.Telegram),
+	}
+
+	grpcResponse, err := h.grpcClient.UpdateTelegramByInfo(c.Context(), grpcRequest)
 	if err != nil {
 		return handleGRPCError(c, err)
 	}
 
-	telegrams := buildTelegramsFromGRPCResponse(grpcResponse)
+	// Assuming UpdateTelegramResponse has a Telegram field
+	telegram := buildTelegramFromGRPCMessage(grpcResponse.Telegram)
 
-	return c.Status(fiber.StatusOK).JSON(dto.UpdateTelegramByInfoResponse{Telegrams: telegrams})
+	return c.Status(fiber.StatusOK).JSON(dto.UpdateTelegramByInfoResponse{Telegram: telegram})
 }
 
 func handleGRPCError(c *fiber.Ctx, err error) error {
@@ -258,4 +262,131 @@ func buildTelegramFromGRPCMessage(t *pb.Telegram) dto.Telegram {
 	}
 
 	return telegram
+}
+
+func buildGRPCMessageFromDTO(t dto.Telegram) *pb.Telegram {
+	var waterlevelOnTime, deltaWaterlevel, waterLevelOn20h, airTemperature, icePhenomeniaState, iceHeight,
+		snowHeight, precipitationDuration, headwaterLevel, averageReservoirLevel, downstreamLevel *wrapperspb.Int32Value
+	var waterTemperature, waterFlow, precipitationValue, reservoirVolume, inflow, reset *wrapperspb.DoubleValue
+	var icePhenomenias []*pb.IcePhenomenia
+	var reservoirDate, reservoirWaterInflowDate *timestamppb.Timestamp
+
+	if t.WaterLevelOnTime != nil {
+		waterlevelOnTime = &wrapperspb.Int32Value{Value: *t.WaterLevelOnTime}
+	}
+
+	if t.DeltaWaterLevel != nil {
+		deltaWaterlevel = &wrapperspb.Int32Value{Value: *t.DeltaWaterLevel}
+	}
+
+	if t.WaterLevelOn20h != nil {
+		waterLevelOn20h = &wrapperspb.Int32Value{Value: *t.WaterLevelOn20h}
+	}
+
+	if t.WaterTemperature != nil {
+		waterTemperature = &wrapperspb.DoubleValue{Value: *t.WaterTemperature}
+	}
+
+	if t.AirTemperature != nil {
+		airTemperature = &wrapperspb.Int32Value{Value: *t.AirTemperature}
+	}
+
+	if t.IcePhenomeniaState != nil {
+		icePhenomeniaState = &wrapperspb.Int32Value{Value: *t.IcePhenomeniaState}
+	}
+
+	if t.IceHeight != nil {
+		iceHeight = &wrapperspb.Int32Value{Value: *t.IceHeight}
+	}
+
+	if t.SnowHeight != nil {
+		snowHeight = &wrapperspb.Int32Value{Value: *t.SnowHeight}
+	}
+
+	if t.WaterFlow != nil {
+		waterFlow = &wrapperspb.DoubleValue{Value: *t.WaterFlow}
+	}
+
+	if t.PrecipitationValue != nil {
+		precipitationValue = &wrapperspb.DoubleValue{Value: *t.PrecipitationValue}
+	}
+
+	if t.PrecipitationDuration != nil {
+		precipitationDuration = &wrapperspb.Int32Value{Value: *t.PrecipitationDuration}
+	}
+
+	if t.ReservoirDate != nil {
+		reservoirDate = &timestamppb.Timestamp{Seconds: t.ReservoirDate.Unix()}
+	}
+
+	if t.HeadwaterLevel != nil {
+		headwaterLevel = &wrapperspb.Int32Value{Value: *t.HeadwaterLevel}
+	}
+
+	if t.AverageReservoirLevel != nil {
+		averageReservoirLevel = &wrapperspb.Int32Value{Value: *t.AverageReservoirLevel}
+	}
+
+	if t.DownstreamLevel != nil {
+		downstreamLevel = &wrapperspb.Int32Value{Value: *t.DownstreamLevel}
+	}
+
+	if t.ReservoirVolume != nil {
+		reservoirVolume = &wrapperspb.DoubleValue{Value: *t.ReservoirVolume}
+	}
+
+	if t.ReservoirWaterInflowDate != nil {
+		reservoirWaterInflowDate = &timestamppb.Timestamp{Seconds: t.ReservoirWaterInflowDate.Unix()}
+	}
+
+	if t.Inflow != nil {
+		inflow = &wrapperspb.DoubleValue{Value: *t.Inflow}
+	}
+
+	if t.Reset != nil {
+		reset = &wrapperspb.DoubleValue{Value: *t.Reset}
+	}
+
+	if len(t.IcePhenomenias) != 0 {
+		icePhenomenias = make([]*pb.IcePhenomenia, 0, len(t.IcePhenomenias))
+
+		for _, ip := range t.IcePhenomenias {
+			intensity := &wrapperspb.Int32Value{Value: *ip.Intensity}
+			icePhenomenias = append(icePhenomenias, &pb.IcePhenomenia{
+				Phenomen:  ip.Phenomen,
+				Intensity: intensity,
+			})
+		}
+	}
+
+	grpcMessage := &pb.Telegram{
+		Id:                       t.ID,
+		GroupId:                  t.GroupID,
+		TelegramCode:             t.TelegramCode,
+		PostCode:                 t.PostCode,
+		Datetime:                 &timestamppb.Timestamp{Seconds: t.Datetime.Unix()},
+		IsDangerous:              t.IsDangerous,
+		WaterLevelOnTime:         waterlevelOnTime,
+		DeltaWaterLevel:          deltaWaterlevel,
+		WaterLevelOn20H:          waterLevelOn20h,
+		WaterTemperature:         waterTemperature,
+		AirTemperature:           airTemperature,
+		IcePhenomeniaState:       icePhenomeniaState,
+		IcePhenomenias:           icePhenomenias,
+		IceHeight:                iceHeight,
+		SnowHeight:               snowHeight,
+		WaterFlow:                waterFlow,
+		PrecipitationValue:       precipitationValue,
+		PrecipitationDuration:    precipitationDuration,
+		ReservoirDate:            reservoirDate,
+		HeadwaterLevel:           headwaterLevel,
+		AverageReservoirLevel:    averageReservoirLevel,
+		DownstreamLevel:          downstreamLevel,
+		ReservoirVolume:          reservoirVolume,
+		ReservoirWaterInflowDate: reservoirWaterInflowDate,
+		Inflow:                   inflow,
+		Reset_:                   reset,
+	}
+
+	return grpcMessage
 }

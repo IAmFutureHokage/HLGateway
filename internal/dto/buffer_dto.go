@@ -48,16 +48,16 @@ type RemoveTelegramsRequest struct {
 	ID []string `json:"id"`
 }
 
-type RemoveTelegramsResponce struct {
+type RemoveTelegramsResponse struct {
 	Success bool `json:"success"`
 }
 
 type UpdateTelegramByInfoRequest struct {
-	Telegram Telegram `json:"telegrams"`
+	Telegram Telegram `json:"telegram"`
 }
 
 type UpdateTelegramByInfoResponse struct {
-	Telegram Telegram `json:"telegrams"`
+	Telegram Telegram `json:"telegram"`
 }
 
 type ControlValue struct {
