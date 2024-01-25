@@ -200,7 +200,7 @@ func (h *BufferHandler) GetTelegramsHandler(c *fiber.Ctx) error {
 // @Produce json
 // @Param request body dto.TransferToSystem true "Transfer To System Request"
 // @Success 200 {object} dto.TransferToSystem
-// @Router /api/get-telegrams [put]
+// @Router /api/transfer-to-system [get]
 func (h *BufferHandler) TransferToSystemHandler(c *fiber.Ctx) error {
 
 	var request dto.TransferToSystemRequest
