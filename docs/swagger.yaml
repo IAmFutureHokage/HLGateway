@@ -12,12 +12,56 @@ definitions:
           $ref: '#/definitions/dto.Telegram'
         type: array
     type: object
+  dto.DeletePostRequest:
+    properties:
+      id:
+        type: string
+    type: object
+  dto.GetPostsPageResponse:
+    properties:
+      max_page_number:
+        type: integer
+      page_number:
+        type: integer
+      posts:
+        items:
+          $ref: '#/definitions/dto.Post'
+        type: array
+    type: object
   dto.IcePhenomenia:
     properties:
       intensity:
         type: integer
       phenomen:
         type: integer
+    type: object
+  dto.Post:
+    properties:
+      code:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      river:
+        type: string
+    type: object
+  dto.PostRequest:
+    properties:
+      post:
+        $ref: '#/definitions/dto.Post'
+    type: object
+  dto.PostResponse:
+    properties:
+      post:
+        $ref: '#/definitions/dto.Post'
+    type: object
+  dto.PostsResponse:
+    properties:
+      posts:
+        items:
+          $ref: '#/definitions/dto.Post'
+        type: array
     type: object
   dto.Telegram:
     properties:
@@ -82,6 +126,28 @@ info:
   title: HLGateway API
   version: "1"
 paths:
+  /api/add-post:
+    post:
+      consumes:
+      - application/json
+      description: Add a new post
+      parameters:
+      - description: Add Post Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PostResponse'
+      summary: Add post
+      tags:
+      - PostsService
   /api/add-telegram:
     post:
       consumes:
@@ -103,5 +169,127 @@ paths:
             $ref: '#/definitions/dto.AddTelegramResponse'
       summary: Add telegram
       tags:
-      - Telegram
+      - Buffer
+  /api/delete-post:
+    delete:
+      consumes:
+      - application/json
+      description: Delete the post by id
+      parameters:
+      - description: Delete Post Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DeletePostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PostResponse'
+      summary: Delete the post
+      tags:
+      - PostsService
+  /api/find-posts:
+    get:
+      consumes:
+      - application/json
+      description: Find posts by serchstring
+      parameters:
+      - description: Search Substring
+        in: query
+        name: substring
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PostsResponse'
+      summary: Find posts
+      tags:
+      - PostsService
+  /api/get-all-posts:
+    get:
+      consumes:
+      - application/json
+      description: Get all posts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PostsResponse'
+      summary: Get all posts
+      tags:
+      - PostsService
+  /api/get-post:
+    get:
+      consumes:
+      - application/json
+      description: Get the post by id
+      parameters:
+      - description: Post ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PostResponse'
+      summary: Get the post
+      tags:
+      - PostsService
+  /api/get-posts:
+    get:
+      consumes:
+      - application/json
+      description: Get posts by page
+      parameters:
+      - description: Page number
+        in: query
+        name: page_number
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetPostsPageResponse'
+      summary: Gets posts
+      tags:
+      - PostsService
+  /api/update-post:
+    put:
+      consumes:
+      - application/json
+      description: Update the post
+      parameters:
+      - description: Update Post Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.PostRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.PostResponse'
+      summary: Update the post
+      tags:
+      - PostsService
 swagger: "2.0"

@@ -10,31 +10,31 @@ import (
 	"time"
 
 	"github.com/IAmFutureHokage/HLGateway/internal/dto"
-	pb "github.com/IAmFutureHokage/HLGateway/proto"
+	pb "github.com/IAmFutureHokage/HLGateway/proto/buffer_service"
 	"github.com/gofiber/fiber/v2"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-type Handler struct {
+type BufferHandler struct {
 	grpcClient pb.HydrologyBufferServiceClient
 }
 
-func NewHandler(client pb.HydrologyBufferServiceClient) *Handler {
-	return &Handler{
+func NewBufferHandler(client pb.HydrologyBufferServiceClient) *BufferHandler {
+	return &BufferHandler{
 		grpcClient: client,
 	}
 }
 
 // @Summary Add telegram
 // @Description Add a new telegram
-// @Tags Telegram
+// @Tags Buffer
 // @Accept json
 // @Produce json
 // @Param request body dto.AddTelegramRequest true "Add Telegram Request"
 // @Success 200 {object} dto.AddTelegramResponse
 // @Router /api/add-telegram [post]
-func (h *Handler) AddTelegramHandler(c *fiber.Ctx) error {
+func (h *BufferHandler) AddTelegramHandler(c *fiber.Ctx) error {
 
 	var request dto.AddTelegramRequest
 	if err := c.BodyParser(&request); err != nil {

@@ -15,6 +15,40 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/add-post": {
+            "post": {
+                "description": "Add a new post",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PostsService"
+                ],
+                "summary": "Add post",
+                "parameters": [
+                    {
+                        "description": "Add Post Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/add-telegram": {
             "post": {
                 "description": "Add a new telegram",
@@ -25,7 +59,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Telegram"
+                    "Buffer"
                 ],
                 "summary": "Add telegram",
                 "parameters": [
@@ -44,6 +78,193 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.AddTelegramResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/delete-post": {
+            "delete": {
+                "description": "Delete the post by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PostsService"
+                ],
+                "summary": "Delete the post",
+                "parameters": [
+                    {
+                        "description": "Delete Post Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.DeletePostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/find-posts": {
+            "get": {
+                "description": "Find posts by serchstring",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PostsService"
+                ],
+                "summary": "Find posts",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search Substring",
+                        "name": "substring",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/get-all-posts": {
+            "get": {
+                "description": "Get all posts",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PostsService"
+                ],
+                "summary": "Get all posts",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/get-post": {
+            "get": {
+                "description": "Get the post by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PostsService"
+                ],
+                "summary": "Get the post",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Post ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/get-posts": {
+            "get": {
+                "description": "Get posts by page",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PostsService"
+                ],
+                "summary": "Gets posts",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Page number",
+                        "name": "page_number",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetPostsPageResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/update-post": {
+            "put": {
+                "description": "Update the post",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "PostsService"
+                ],
+                "summary": "Update the post",
+                "parameters": [
+                    {
+                        "description": "Update Post Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.PostResponse"
                         }
                     }
                 }
@@ -70,6 +291,31 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.DeletePostRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.GetPostsPageResponse": {
+            "type": "object",
+            "properties": {
+                "max_page_number": {
+                    "type": "integer"
+                },
+                "page_number": {
+                    "type": "integer"
+                },
+                "posts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.Post"
+                    }
+                }
+            }
+        },
         "dto.IcePhenomenia": {
             "type": "object",
             "properties": {
@@ -78,6 +324,50 @@ const docTemplate = `{
                 },
                 "phenomen": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.Post": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "river": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.PostRequest": {
+            "type": "object",
+            "properties": {
+                "post": {
+                    "$ref": "#/definitions/dto.Post"
+                }
+            }
+        },
+        "dto.PostResponse": {
+            "type": "object",
+            "properties": {
+                "post": {
+                    "$ref": "#/definitions/dto.Post"
+                }
+            }
+        },
+        "dto.PostsResponse": {
+            "type": "object",
+            "properties": {
+                "posts": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.Post"
+                    }
                 }
             }
         },

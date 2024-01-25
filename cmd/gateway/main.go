@@ -15,7 +15,8 @@ import (
 
 	_ "github.com/IAmFutureHokage/HLGateway/docs"
 	"github.com/IAmFutureHokage/HLGateway/internal/handlers"
-	pb "github.com/IAmFutureHokage/HLGateway/proto"
+	buffer_pb "github.com/IAmFutureHokage/HLGateway/proto/buffer_service"
+	posts_pb "github.com/IAmFutureHokage/HLGateway/proto/posts_service"
 )
 
 func init() {
@@ -42,21 +43,34 @@ func main() {
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
-	conn, err := grpc.Dial(viper.GetString("services.buffer-service"), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	//bufferService
+	connBuffer, err := grpc.Dial(viper.GetString("services.buffer-service"), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Не удалось подключиться к gRPC сервису: %v", err)
 	}
 
-	grpcClient := pb.NewHydrologyBufferServiceClient(conn)
-	bufferHandler := handlers.NewHandler(grpcClient)
+	grpcbufferClient := buffer_pb.NewHydrologyBufferServiceClient(connBuffer)
+	bufferHandler := handlers.NewBufferHandler(grpcbufferClient)
 
+	//postsService
+	connPosts, err := grpc.Dial(viper.GetString("services.posts-service"), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("Не удалось подключиться к gRPC сервису: %v", err)
+	}
+
+	grpcPostsClient := posts_pb.NewPostsServiceClient(connPosts)
+	postsHandler := handlers.NewPostsHandler(grpcPostsClient)
+
+	// мониторинг сервисов
 	go monitorServiceAvailability(viper.GetString("services.buffer-service"))
+	go monitorServiceAvailability(viper.GetString("services.posts-service"))
 
 	// Глобальные middleware
 	//app.Use(middleware.Logger())
 	//app.Use(middleware.Recover())
 
-	setupRoutes(app, bufferHandler)
+	setupBufferRoutes(app, bufferHandler)
+	setupPostsRoutes(app, postsHandler)
 
 	port := viper.GetInt("server.port")
 	if port == 0 {
@@ -68,10 +82,19 @@ func main() {
 	}
 }
 
-func setupRoutes(app *fiber.App, handler *handlers.Handler) {
+func setupBufferRoutes(app *fiber.App, handler *handlers.BufferHandler) {
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
-
 	app.Post("/api/v1/api/add-telegram", handler.AddTelegramHandler)
+}
+
+func setupPostsRoutes(app *fiber.App, handler *handlers.PostsHandler) {
+	app.Post("/api/v1/api/add-post", handler.AddPostHandler)
+	app.Delete("/api/v1/api/delete-post", handler.DeletePostHandler)
+	app.Put("/api/v1/api/update-post", handler.UpdatePostHandler)
+	app.Get("/api/v1/api/get-posts", handler.GetPostsHandler)
+	app.Get("/api/v1/api/get-post", handler.GetPostHandler)
+	app.Get("/api/v1/api/find-posts", handler.FindPostsHandler)
+	app.Get("/api/v1/api/get-all-posts", handler.GetAllPostsHandler)
 }
 
 func monitorServiceAvailability(serviceAddress string) {
