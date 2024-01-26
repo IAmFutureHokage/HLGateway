@@ -1,0 +1,88 @@
+syntax = "proto3";
+option csharp_namespace = "UsersService.Protos";
+
+option go_package = "github.com/DirtyCode47/HL-UsersService";
+
+service UsersService {
+	rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+	rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+	rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+	rpc GetUser(GetUserRequest) returns (GetUserResponse);
+	rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse);
+	rpc FindUsersWithFilters(FindUsersWithFiltersRequest) returns (FindUsersWithFiltersResponse);
+}
+
+message UserDTO{
+	string id = 1;
+	string role = 2;
+	string post_code = 3;
+	string first_name = 4;
+	string middle_name = 5;
+	string last_name = 6;
+	string phone = 7;
+	string login = 8;
+	string password = 9;
+}
+
+
+
+message CreateUserRequest{
+	UserDTO user = 1;
+}
+message CreateUserResponse{
+	UserDTO user = 1;
+}
+
+
+
+message DeleteUserRequest{
+	string id = 1;
+}
+message DeleteUserResponse{
+	UserDTO user = 1;
+}
+
+
+
+message UpdateUserRequest{
+	UserDTO user = 1;
+}
+message UpdateUserResponse{
+	UserDTO user = 1;
+}
+
+
+
+message GetUserRequest{
+	string id = 1;
+}
+message GetUserResponse{
+	UserDTO user = 1;
+}
+
+message GetAllUsersRequest{
+
+}
+message GetAllUsersResponse{
+	repeated UserDTO users = 1;
+}
+
+message FindUsersWithFiltersRequest{
+	string name = 1;
+	string role = 2;
+	string post_code = 3;
+}
+message FindUsersWithFiltersResponse{
+	repeated UserDTO users = 1;
+}
+
+
+
+
+
+
+
+
+
+
+

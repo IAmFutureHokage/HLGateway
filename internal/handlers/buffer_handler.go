@@ -56,7 +56,7 @@ func (h *BufferHandler) AddTelegramHandler(c *fiber.Ctx) error {
 
 // @Summary Remove telegrams
 // @Description Remove existing telegrams
-// @Tags Telegram
+// @Tags Buffer
 // @Accept json
 // @Produce json
 // @Param request body dto.RemoveTelegramsRequest true "Remove Telegrams Request"
@@ -80,7 +80,7 @@ func (h *BufferHandler) RemoveTelegramsHandler(c *fiber.Ctx) error {
 
 // @Summary Update Telegram By Info
 // @Description Update info about telegram By Info
-// @Tags Telegram
+// @Tags Buffer
 // @Accept json
 // @Produce json
 // @Param request body dto.UpdateTelegramByInfoRequest true "Update Telegram By Info Request"
@@ -109,7 +109,7 @@ func (h *BufferHandler) UpdateTelegramByInfoHandler(c *fiber.Ctx) error {
 
 // @Summary Update Telegram By Code
 // @Description Update info about telegram By Code
-// @Tags Telegram
+// @Tags Buffer
 // @Accept json
 // @Produce json
 // @Param request body dto.UpdateTelegramByCodeRequest true "Update Telegram By Code Request"
@@ -139,11 +139,11 @@ func (h *BufferHandler) UpdateTelegramByCodeHandler(c *fiber.Ctx) error {
 
 // @Summary Get Telegram
 // @Description Get Telegram by id
-// @Tags Telegram
+// @Tags Buffer
 // @Accept json
 // @Produce json
-// @Param request body dto.GetTelegram true "Get Telegram Request"
-// @Success 200 {object} dto.GetTelegram
+// @Param request body dto.GetTelegramRequest true "Get Telegram Request"
+// @Success 200 {object} dto.GetTelegramResponse
 // @Router /api/get-telegram [get]
 func (h *BufferHandler) GetTelegramHandler(c *fiber.Ctx) error {
 
@@ -168,11 +168,11 @@ func (h *BufferHandler) GetTelegramHandler(c *fiber.Ctx) error {
 
 // @Summary Get Telegrams
 // @Description Get all Telegrams
-// @Tags Telegram
+// @Tags Buffer
 // @Accept json
 // @Produce json
-// @Param request body dto.GetTelegrams true "Get Telegrams Request"
-// @Success 200 {object} dto.GetTelegrams
+// @Param request body dto.GetTelegramsRequest true "Get Telegrams Request"
+// @Success 200 {object} dto.GetTelegramsResponse
 // @Router /api/get-telegrams [get]
 func (h *BufferHandler) GetTelegramsHandler(c *fiber.Ctx) error {
 
@@ -195,11 +195,11 @@ func (h *BufferHandler) GetTelegramsHandler(c *fiber.Ctx) error {
 
 // @Summary Transfer To System
 // @Description Transfer To System
-// @Tags Telegram
+// @Tags Buffer
 // @Accept json
 // @Produce json
-// @Param request body dto.TransferToSystem true "Transfer To System Request"
-// @Success 200 {object} dto.TransferToSystem
+// @Param request body dto.TransferToSystemRequest true "Transfer To System Request"
+// @Success 200 {object} dto.TransferToSystemResponse
 // @Router /api/transfer-to-system [get]
 func (h *BufferHandler) TransferToSystemHandler(c *fiber.Ctx) error {
 

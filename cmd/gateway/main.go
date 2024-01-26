@@ -6,6 +6,9 @@ import (
 	"os"
 	"time"
 
+	_ "github.com/IAmFutureHokage/HLGateway/docs"
+	"github.com/IAmFutureHokage/HLGateway/internal/handlers"
+	buffer_pb "github.com/IAmFutureHokage/HLGateway/proto/buffer_service"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/spf13/viper"
@@ -13,12 +16,9 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	_ "github.com/IAmFutureHokage/HLGateway/docs"
-	"github.com/IAmFutureHokage/HLGateway/internal/handlers"
-	buffer_pb "github.com/IAmFutureHokage/HLGateway/proto/buffer_service"
-
 	control_pb "github.com/IAmFutureHokage/HLGateway/proto/control_service"
 	posts_pb "github.com/IAmFutureHokage/HLGateway/proto/posts_service"
+	users_pb "github.com/IAmFutureHokage/HLGateway/proto/user_service"
 )
 
 func init() {
@@ -28,7 +28,7 @@ func init() {
 	}
 
 	viper.SetConfigName(env)
-	viper.AddConfigPath("../../config")
+	viper.AddConfigPath("./config")
 	viper.SetConfigType("yaml")
 
 	if err := viper.ReadInConfig(); err != nil {
@@ -72,10 +72,20 @@ func main() {
 	grpcControlClient := control_pb.NewHydrologyStatsServiceClient(connControl)
 	controlHandler := handlers.NewControlHandler(grpcControlClient)
 
+	//usersService
+	connUsers, err := grpc.Dial(viper.GetString("services.users-service"), grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("Не удалось подключиться к gRPC сервису: %v", err)
+	}
+
+	grpcUsersClient := users_pb.NewUsersServiceClient(connUsers)
+	usersHandler := handlers.NewUsersHandler(grpcUsersClient)
+
 	//мониторинг сервисов
 	go monitorServiceAvailability(viper.GetString("services.buffer-service"))
 	go monitorServiceAvailability(viper.GetString("services.posts-service"))
 	go monitorServiceAvailability(viper.GetString("services.control-service"))
+	go monitorServiceAvailability(viper.GetString("services.users-service"))
 
 	// Глобальные middleware
 	// app.Use(middleware.Logger())
@@ -84,6 +94,7 @@ func main() {
 	setupBufferRoutes(app, bufferHandler)
 	setupPostsRoutes(app, postsHandler)
 	setupControlRoutes(app, controlHandler)
+	setupUsersRoutes(app, usersHandler)
 
 	port := viper.GetInt("server.port")
 	if port == 0 {
@@ -123,6 +134,14 @@ func setupControlRoutes(app *fiber.App, handler *handlers.ControlHandler) {
 	app.Get("/api/v1/api/get-control-values", handler.GetControlValuesHandler)
 	app.Get("/api/v1/api/check-water-level", handler.CheckWaterLevelHandler)
 	app.Get("/api/v1/api/get-stats", handler.GetStatsHandler)
+}
+
+func setupUsersRoutes(app *fiber.App, handler *handlers.UsersHandler) {
+	app.Post("/api/v1/api/add-user", handler.AddUserHandler)
+	app.Delete("/api/v1/api/delete-user", handler.DeleteUserHandler)
+	app.Put("/api/v1/api/update-user", handler.UpdateUserHandler)
+	app.Get("/api/v1/api/get-user", handler.GetUserHandler)
+	app.Get("/api/v1/api/get-users", handler.GetUsersHandler)
 }
 
 func monitorServiceAvailability(serviceAddress string) {

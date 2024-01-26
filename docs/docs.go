@@ -117,6 +117,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/add-user": {
+            "post": {
+                "description": "Add a new user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "UsersService"
+                ],
+                "summary": "Add user",
+                "parameters": [
+                    {
+                        "description": "Add User Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/check-water-level": {
             "get": {
                 "description": "Check Water Level",
@@ -192,6 +226,40 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.PostResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/delete-user": {
+            "delete": {
+                "description": "Delete the user by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "UsersService"
+                ],
+                "summary": "Delete the user",
+                "parameters": [
+                    {
+                        "description": "Delete User Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserIDRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserResponse"
                         }
                     }
                 }
@@ -415,6 +483,129 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/get-telegram": {
+            "get": {
+                "description": "Get Telegram by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Buffer"
+                ],
+                "summary": "Get Telegram",
+                "parameters": [
+                    {
+                        "description": "Get Telegram Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetTelegramRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetTelegramResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/get-telegrams": {
+            "get": {
+                "description": "Get all Telegrams",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Buffer"
+                ],
+                "summary": "Get Telegrams",
+                "parameters": [
+                    {
+                        "description": "Get Telegrams Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetTelegramsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GetTelegramsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/get-user": {
+            "get": {
+                "description": "Get the user by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "UsersService"
+                ],
+                "summary": "Get the user",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/get-users": {
+            "get": {
+                "description": "Get all users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "UsersService"
+                ],
+                "summary": "Get all users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UsersResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/remove-control-value": {
             "delete": {
                 "description": "Remove a control value by id",
@@ -444,6 +635,74 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.RemoveControlValueResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/remove-telegrams": {
+            "delete": {
+                "description": "Remove existing telegrams",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Buffer"
+                ],
+                "summary": "Remove telegrams",
+                "parameters": [
+                    {
+                        "description": "Remove Telegrams Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RemoveTelegramsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.RemoveTelegramsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transfer-to-system": {
+            "get": {
+                "description": "Transfer To System",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Buffer"
+                ],
+                "summary": "Transfer To System",
+                "parameters": [
+                    {
+                        "description": "Transfer To System Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.TransferToSystemRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.TransferToSystemResponse"
                         }
                     }
                 }
@@ -512,6 +771,108 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.PostResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/update-telegram-by-code": {
+            "put": {
+                "description": "Update info about telegram By Code",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Buffer"
+                ],
+                "summary": "Update Telegram By Code",
+                "parameters": [
+                    {
+                        "description": "Update Telegram By Code Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateTelegramByCodeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateTelegramByCodeResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/update-telegram-by-info": {
+            "put": {
+                "description": "Update info about telegram By Info",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Buffer"
+                ],
+                "summary": "Update Telegram By Info",
+                "parameters": [
+                    {
+                        "description": "Update Telegram By Info Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateTelegramByInfoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateTelegramByInfoResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/update-user": {
+            "put": {
+                "description": "Update user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "UsersService"
+                ],
+                "summary": "Update user",
+                "parameters": [
+                    {
+                        "description": "Update User Request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.UserResponse"
                         }
                     }
                 }
@@ -664,6 +1025,36 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.GetTelegramRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.GetTelegramResponse": {
+            "type": "object",
+            "properties": {
+                "telegram": {
+                    "$ref": "#/definitions/dto.Telegram"
+                }
+            }
+        },
+        "dto.GetTelegramsRequest": {
+            "type": "object"
+        },
+        "dto.GetTelegramsResponse": {
+            "type": "object",
+            "properties": {
+                "telegrams": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.Telegram"
+                    }
+                }
+            }
+        },
         "dto.IcePhenomenia": {
             "type": "object",
             "properties": {
@@ -728,6 +1119,25 @@ const docTemplate = `{
             }
         },
         "dto.RemoveControlValueResponse": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto.RemoveTelegramsRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "dto.RemoveTelegramsResponse": {
             "type": "object",
             "properties": {
                 "success": {
@@ -844,6 +1254,17 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.TransferToSystemRequest": {
+            "type": "object"
+        },
+        "dto.TransferToSystemResponse": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
         "dto.UpdateControlValueRequest": {
             "type": "object",
             "properties": {
@@ -862,6 +1283,108 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/dto.ControlValue"
+                    }
+                }
+            }
+        },
+        "dto.UpdateTelegramByCodeRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "telegram_code": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UpdateTelegramByCodeResponse": {
+            "type": "object",
+            "properties": {
+                "telegram": {
+                    "$ref": "#/definitions/dto.Telegram"
+                }
+            }
+        },
+        "dto.UpdateTelegramByInfoRequest": {
+            "type": "object",
+            "properties": {
+                "telegram": {
+                    "$ref": "#/definitions/dto.Telegram"
+                }
+            }
+        },
+        "dto.UpdateTelegramByInfoResponse": {
+            "type": "object",
+            "properties": {
+                "telegram": {
+                    "$ref": "#/definitions/dto.Telegram"
+                }
+            }
+        },
+        "dto.User": {
+            "type": "object",
+            "properties": {
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "last_name": {
+                    "type": "string"
+                },
+                "login": {
+                    "type": "string"
+                },
+                "middle_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "post_code": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserIDRequest": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserRequest": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/dto.User"
+                }
+            }
+        },
+        "dto.UserResponse": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "$ref": "#/definitions/dto.User"
+                }
+            }
+        },
+        "dto.UsersResponse": {
+            "type": "object",
+            "properties": {
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.User"
                     }
                 }
             }

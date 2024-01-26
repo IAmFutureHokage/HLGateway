@@ -5,3 +5,4 @@ services:
   buffer-service: "0.0.0.0:50051"
   posts-service: "0.0.0.0:50052"
   control-service: "0.0.0.0:50053"
+  users-service: "0.0.0.0:50054"

@@ -96,6 +96,25 @@ definitions:
           $ref: '#/definitions/dto.StatsDay'
         type: array
     type: object
+  dto.GetTelegramRequest:
+    properties:
+      id:
+        type: string
+    type: object
+  dto.GetTelegramResponse:
+    properties:
+      telegram:
+        $ref: '#/definitions/dto.Telegram'
+    type: object
+  dto.GetTelegramsRequest:
+    type: object
+  dto.GetTelegramsResponse:
+    properties:
+      telegrams:
+        items:
+          $ref: '#/definitions/dto.Telegram'
+        type: array
+    type: object
   dto.IcePhenomenia:
     properties:
       intensity:
@@ -137,6 +156,18 @@ definitions:
         type: string
     type: object
   dto.RemoveControlValueResponse:
+    properties:
+      success:
+        type: boolean
+    type: object
+  dto.RemoveTelegramsRequest:
+    properties:
+      id:
+        items:
+          type: string
+        type: array
+    type: object
+  dto.RemoveTelegramsResponse:
     properties:
       success:
         type: boolean
@@ -213,6 +244,13 @@ definitions:
       water_temperature:
         type: number
     type: object
+  dto.TransferToSystemRequest:
+    type: object
+  dto.TransferToSystemResponse:
+    properties:
+      success:
+        type: boolean
+    type: object
   dto.UpdateControlValueRequest:
     properties:
       control_values:
@@ -225,6 +263,71 @@ definitions:
       control_values:
         items:
           $ref: '#/definitions/dto.ControlValue'
+        type: array
+    type: object
+  dto.UpdateTelegramByCodeRequest:
+    properties:
+      id:
+        type: string
+      telegram_code:
+        type: string
+    type: object
+  dto.UpdateTelegramByCodeResponse:
+    properties:
+      telegram:
+        $ref: '#/definitions/dto.Telegram'
+    type: object
+  dto.UpdateTelegramByInfoRequest:
+    properties:
+      telegram:
+        $ref: '#/definitions/dto.Telegram'
+    type: object
+  dto.UpdateTelegramByInfoResponse:
+    properties:
+      telegram:
+        $ref: '#/definitions/dto.Telegram'
+    type: object
+  dto.User:
+    properties:
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      login:
+        type: string
+      middle_name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      post_code:
+        type: string
+      role:
+        type: string
+    type: object
+  dto.UserIDRequest:
+    properties:
+      id:
+        type: string
+    type: object
+  dto.UserRequest:
+    properties:
+      user:
+        $ref: '#/definitions/dto.User'
+    type: object
+  dto.UserResponse:
+    properties:
+      user:
+        $ref: '#/definitions/dto.User'
+    type: object
+  dto.UsersResponse:
+    properties:
+      users:
+        items:
+          $ref: '#/definitions/dto.User'
         type: array
     type: object
 info:
@@ -299,6 +402,28 @@ paths:
       summary: Add telegram
       tags:
       - Buffer
+  /api/add-user:
+    post:
+      consumes:
+      - application/json
+      description: Add a new user
+      parameters:
+      - description: Add User Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserResponse'
+      summary: Add user
+      tags:
+      - UsersService
   /api/check-water-level:
     get:
       consumes:
@@ -352,6 +477,28 @@ paths:
       summary: Delete the post
       tags:
       - PostsService
+  /api/delete-user:
+    delete:
+      consumes:
+      - application/json
+      description: Delete the user by id
+      parameters:
+      - description: Delete User Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserIDRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserResponse'
+      summary: Delete the user
+      tags:
+      - UsersService
   /api/find-posts:
     get:
       consumes:
@@ -497,6 +644,86 @@ paths:
       summary: Get stats
       tags:
       - Statistic
+  /api/get-telegram:
+    get:
+      consumes:
+      - application/json
+      description: Get Telegram by id
+      parameters:
+      - description: Get Telegram Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GetTelegramRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetTelegramResponse'
+      summary: Get Telegram
+      tags:
+      - Buffer
+  /api/get-telegrams:
+    get:
+      consumes:
+      - application/json
+      description: Get all Telegrams
+      parameters:
+      - description: Get Telegrams Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.GetTelegramsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.GetTelegramsResponse'
+      summary: Get Telegrams
+      tags:
+      - Buffer
+  /api/get-user:
+    get:
+      consumes:
+      - application/json
+      description: Get the user by id
+      parameters:
+      - description: User ID
+        in: query
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserResponse'
+      summary: Get the user
+      tags:
+      - UsersService
+  /api/get-users:
+    get:
+      consumes:
+      - application/json
+      description: Get all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UsersResponse'
+      summary: Get all users
+      tags:
+      - UsersService
   /api/remove-control-value:
     delete:
       consumes:
@@ -519,6 +746,50 @@ paths:
       summary: Remove control value
       tags:
       - Statistic
+  /api/remove-telegrams:
+    delete:
+      consumes:
+      - application/json
+      description: Remove existing telegrams
+      parameters:
+      - description: Remove Telegrams Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RemoveTelegramsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.RemoveTelegramsResponse'
+      summary: Remove telegrams
+      tags:
+      - Buffer
+  /api/transfer-to-system:
+    get:
+      consumes:
+      - application/json
+      description: Transfer To System
+      parameters:
+      - description: Transfer To System Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.TransferToSystemRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.TransferToSystemResponse'
+      summary: Transfer To System
+      tags:
+      - Buffer
   /api/update-control-value:
     put:
       consumes:
@@ -563,4 +834,70 @@ paths:
       summary: Update the post
       tags:
       - PostsService
+  /api/update-telegram-by-code:
+    put:
+      consumes:
+      - application/json
+      description: Update info about telegram By Code
+      parameters:
+      - description: Update Telegram By Code Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateTelegramByCodeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateTelegramByCodeResponse'
+      summary: Update Telegram By Code
+      tags:
+      - Buffer
+  /api/update-telegram-by-info:
+    put:
+      consumes:
+      - application/json
+      description: Update info about telegram By Info
+      parameters:
+      - description: Update Telegram By Info Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateTelegramByInfoRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateTelegramByInfoResponse'
+      summary: Update Telegram By Info
+      tags:
+      - Buffer
+  /api/update-user:
+    put:
+      consumes:
+      - application/json
+      description: Update user
+      parameters:
+      - description: Update User Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UserResponse'
+      summary: Update user
+      tags:
+      - UsersService
 swagger: "2.0"
