@@ -16,6 +16,7 @@ import (
 	_ "github.com/IAmFutureHokage/HLGateway/docs"
 	"github.com/IAmFutureHokage/HLGateway/internal/handlers"
 	buffer_pb "github.com/IAmFutureHokage/HLGateway/proto/buffer_service"
+
 	control_pb "github.com/IAmFutureHokage/HLGateway/proto/control_service"
 	posts_pb "github.com/IAmFutureHokage/HLGateway/proto/posts_service"
 )
@@ -27,7 +28,7 @@ func init() {
 	}
 
 	viper.SetConfigName(env)
-	viper.AddConfigPath("./config")
+	viper.AddConfigPath("../../config")
 	viper.SetConfigType("yaml")
 
 	if err := viper.ReadInConfig(); err != nil {
@@ -71,14 +72,14 @@ func main() {
 	grpcControlClient := control_pb.NewHydrologyStatsServiceClient(connControl)
 	controlHandler := handlers.NewControlHandler(grpcControlClient)
 
-	// мониторинг сервисов
+	//мониторинг сервисов
 	go monitorServiceAvailability(viper.GetString("services.buffer-service"))
 	go monitorServiceAvailability(viper.GetString("services.posts-service"))
 	go monitorServiceAvailability(viper.GetString("services.control-service"))
 
 	// Глобальные middleware
-	//app.Use(middleware.Logger())
-	//app.Use(middleware.Recover())
+	// app.Use(middleware.Logger())
+	// app.Use(middleware.Recover())
 
 	setupBufferRoutes(app, bufferHandler)
 	setupPostsRoutes(app, postsHandler)
@@ -97,12 +98,12 @@ func main() {
 func setupBufferRoutes(app *fiber.App, handler *handlers.BufferHandler) {
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 	app.Post("/api/v1/api/add-telegram", handler.AddTelegramHandler)
-	// app.Delete("/api/v1/api/remove-telegrams", handler.RemoveTelegramsHandler)
-	// app.Put("/api/v1/api/update-telegram-by-info", handler.UpdateTelegramByInfoHandler)
-	// app.Put("/api/v1/api/update-telegram-by-code", handler.UpdateTelegramByCodeHandler)
-	// app.Get("/api/v1/api/get-telegram", handler.GetTelegramHandler)
-	// app.Get("/api/v1/api/get-telegrams", handler.GetTelegramsHandler)
-	// app.Get("/api/v1/api/transfer-to-system", handler.TransferToSystemHandler)
+	app.Delete("/api/v1/api/remove-telegrams", handler.RemoveTelegramsHandler)
+	app.Put("/api/v1/api/update-telegram-by-info", handler.UpdateTelegramByInfoHandler)
+	app.Put("/api/v1/api/update-telegram-by-code", handler.UpdateTelegramByCodeHandler)
+	app.Get("/api/v1/api/get-telegram", handler.GetTelegramHandler)
+	app.Get("/api/v1/api/get-telegrams", handler.GetTelegramsHandler)
+	app.Get("/api/v1/api/transfer-to-system", handler.TransferToSystemHandler)
 }
 
 func setupPostsRoutes(app *fiber.App, handler *handlers.PostsHandler) {
