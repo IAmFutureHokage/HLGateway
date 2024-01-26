@@ -498,13 +498,11 @@ const docTemplate = `{
                 "summary": "Get Telegram",
                 "parameters": [
                     {
-                        "description": "Get Telegram Request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.GetTelegramRequest"
-                        }
+                        "type": "string",
+                        "description": "Id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -530,17 +528,6 @@ const docTemplate = `{
                     "Buffer"
                 ],
                 "summary": "Get Telegrams",
-                "parameters": [
-                    {
-                        "description": "Get Telegrams Request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.GetTelegramsRequest"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -687,17 +674,6 @@ const docTemplate = `{
                     "Buffer"
                 ],
                 "summary": "Transfer To System",
-                "parameters": [
-                    {
-                        "description": "Transfer To System Request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.TransferToSystemRequest"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1025,14 +1001,6 @@ const docTemplate = `{
                 }
             }
         },
-        "dto.GetTelegramRequest": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                }
-            }
-        },
         "dto.GetTelegramResponse": {
             "type": "object",
             "properties": {
@@ -1040,9 +1008,6 @@ const docTemplate = `{
                     "$ref": "#/definitions/dto.Telegram"
                 }
             }
-        },
-        "dto.GetTelegramsRequest": {
-            "type": "object"
         },
         "dto.GetTelegramsResponse": {
             "type": "object",
@@ -1253,9 +1218,6 @@ const docTemplate = `{
                     "type": "number"
                 }
             }
-        },
-        "dto.TransferToSystemRequest": {
-            "type": "object"
         },
         "dto.TransferToSystemResponse": {
             "type": "object",

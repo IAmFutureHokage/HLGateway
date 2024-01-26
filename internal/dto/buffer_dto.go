@@ -69,22 +69,12 @@ type UpdateTelegramByCodeResponse struct {
 	Telegram Telegram `json:"telegram"`
 }
 
-type GetTelegramRequest struct {
-	ID string `json:"id"`
-}
-
 type GetTelegramResponse struct {
 	Telegram Telegram `json:"telegram"`
 }
 
-type GetTelegramsRequest struct {
-}
-
 type GetTelegramsResponse struct {
 	Telegrams []Telegram `json:"telegrams"`
-}
-
-type TransferToSystemRequest struct {
 }
 
 type TransferToSystemResponse struct {

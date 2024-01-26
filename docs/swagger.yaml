@@ -96,17 +96,10 @@ definitions:
           $ref: '#/definitions/dto.StatsDay'
         type: array
     type: object
-  dto.GetTelegramRequest:
-    properties:
-      id:
-        type: string
-    type: object
   dto.GetTelegramResponse:
     properties:
       telegram:
         $ref: '#/definitions/dto.Telegram'
-    type: object
-  dto.GetTelegramsRequest:
     type: object
   dto.GetTelegramsResponse:
     properties:
@@ -243,8 +236,6 @@ definitions:
         type: integer
       water_temperature:
         type: number
-    type: object
-  dto.TransferToSystemRequest:
     type: object
   dto.TransferToSystemResponse:
     properties:
@@ -650,12 +641,11 @@ paths:
       - application/json
       description: Get Telegram by id
       parameters:
-      - description: Get Telegram Request
-        in: body
-        name: request
+      - description: Id
+        in: query
+        name: id
         required: true
-        schema:
-          $ref: '#/definitions/dto.GetTelegramRequest'
+        type: string
       produces:
       - application/json
       responses:
@@ -671,13 +661,6 @@ paths:
       consumes:
       - application/json
       description: Get all Telegrams
-      parameters:
-      - description: Get Telegrams Request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.GetTelegramsRequest'
       produces:
       - application/json
       responses:
@@ -773,13 +756,6 @@ paths:
       consumes:
       - application/json
       description: Transfer To System
-      parameters:
-      - description: Transfer To System Request
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/dto.TransferToSystemRequest'
       produces:
       - application/json
       responses:

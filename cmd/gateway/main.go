@@ -8,7 +8,6 @@ import (
 
 	_ "github.com/IAmFutureHokage/HLGateway/docs"
 	"github.com/IAmFutureHokage/HLGateway/internal/handlers"
-	buffer_pb "github.com/IAmFutureHokage/HLGateway/proto/buffer_service"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/spf13/viper"
@@ -16,6 +15,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
+	buffer_pb "github.com/IAmFutureHokage/HLGateway/proto/buffer_service"
 	control_pb "github.com/IAmFutureHokage/HLGateway/proto/control_service"
 	posts_pb "github.com/IAmFutureHokage/HLGateway/proto/posts_service"
 	users_pb "github.com/IAmFutureHokage/HLGateway/proto/user_service"
@@ -28,7 +28,7 @@ func init() {
 	}
 
 	viper.SetConfigName(env)
-	viper.AddConfigPath("./config")
+	viper.AddConfigPath("../../config")
 	viper.SetConfigType("yaml")
 
 	if err := viper.ReadInConfig(); err != nil {

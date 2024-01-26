@@ -491,13 +491,11 @@
                 "summary": "Get Telegram",
                 "parameters": [
                     {
-                        "description": "Get Telegram Request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.GetTelegramRequest"
-                        }
+                        "type": "string",
+                        "description": "Id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -523,17 +521,6 @@
                     "Buffer"
                 ],
                 "summary": "Get Telegrams",
-                "parameters": [
-                    {
-                        "description": "Get Telegrams Request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.GetTelegramsRequest"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -680,17 +667,6 @@
                     "Buffer"
                 ],
                 "summary": "Transfer To System",
-                "parameters": [
-                    {
-                        "description": "Transfer To System Request",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.TransferToSystemRequest"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1018,14 +994,6 @@
                 }
             }
         },
-        "dto.GetTelegramRequest": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                }
-            }
-        },
         "dto.GetTelegramResponse": {
             "type": "object",
             "properties": {
@@ -1033,9 +1001,6 @@
                     "$ref": "#/definitions/dto.Telegram"
                 }
             }
-        },
-        "dto.GetTelegramsRequest": {
-            "type": "object"
         },
         "dto.GetTelegramsResponse": {
             "type": "object",
@@ -1246,9 +1211,6 @@
                     "type": "number"
                 }
             }
-        },
-        "dto.TransferToSystemRequest": {
-            "type": "object"
         },
         "dto.TransferToSystemResponse": {
             "type": "object",

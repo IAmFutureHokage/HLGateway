@@ -142,18 +142,15 @@ func (h *BufferHandler) UpdateTelegramByCodeHandler(c *fiber.Ctx) error {
 // @Tags Buffer
 // @Accept json
 // @Produce json
-// @Param request body dto.GetTelegramRequest true "Get Telegram Request"
+// @Param id query string true "Id"
 // @Success 200 {object} dto.GetTelegramResponse
 // @Router /api/get-telegram [get]
 func (h *BufferHandler) GetTelegramHandler(c *fiber.Ctx) error {
 
-	var request dto.GetTelegramRequest
-	if err := c.BodyParser(&request); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Ошибка декодирования запроса"})
-	}
+	id := c.Query("id")
 
 	grpcRequest := pb.GetTelegramRequest{
-		Id: request.ID,
+		Id: id,
 	}
 
 	grpcResponse, err := h.grpcClient.GetTelegram(c.Context(), &grpcRequest)
@@ -171,19 +168,11 @@ func (h *BufferHandler) GetTelegramHandler(c *fiber.Ctx) error {
 // @Tags Buffer
 // @Accept json
 // @Produce json
-// @Param request body dto.GetTelegramsRequest true "Get Telegrams Request"
 // @Success 200 {object} dto.GetTelegramsResponse
 // @Router /api/get-telegrams [get]
 func (h *BufferHandler) GetTelegramsHandler(c *fiber.Ctx) error {
 
-	var request dto.GetTelegramsRequest
-	if err := c.BodyParser(&request); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Ошибка декодирования запроса"})
-	}
-
-	grpcRequest := pb.GetTelegramsRequest{}
-
-	grpcResponse, err := h.grpcClient.GetTelegrams(c.Context(), &grpcRequest)
+	grpcResponse, err := h.grpcClient.GetTelegrams(c.Context(), &pb.GetTelegramsRequest{})
 	if err != nil {
 		return handleGRPCError(c, err)
 	}
@@ -198,19 +187,11 @@ func (h *BufferHandler) GetTelegramsHandler(c *fiber.Ctx) error {
 // @Tags Buffer
 // @Accept json
 // @Produce json
-// @Param request body dto.TransferToSystemRequest true "Transfer To System Request"
 // @Success 200 {object} dto.TransferToSystemResponse
 // @Router /api/transfer-to-system [get]
 func (h *BufferHandler) TransferToSystemHandler(c *fiber.Ctx) error {
 
-	var request dto.TransferToSystemRequest
-	if err := c.BodyParser(&request); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Ошибка декодирования запроса"})
-	}
-
-	grpcRequest := pb.TransferToSystemRequest{}
-
-	grpcResponse, err := h.grpcClient.TransferToSystem(c.Context(), &grpcRequest)
+	grpcResponse, err := h.grpcClient.TransferToSystem(c.Context(), &pb.TransferToSystemRequest{})
 	if err != nil {
 		return handleGRPCError(c, err)
 	}
